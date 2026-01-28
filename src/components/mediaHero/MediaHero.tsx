@@ -4,9 +4,9 @@ import { HeroActions } from "./HeroActions";
 
 export function MediaHero() {
   return (
-    <div className="relative px-6 p-40">
+    <div className="relative px-6 pt-40">
       {/* Capa do filme */}
-      <div className="absolute inset-0 -z-20 h-full mask-b-to-transparent ">
+      <div className="absolute inset-0 -z-20 h-full mask-b-to-transparent">
         <Image
           src="/fallout-bg.jpg"
           alt="Fallout Poster"
@@ -19,8 +19,8 @@ export function MediaHero() {
 
       <div className="flex flex-col gap-5">
         {/* Metadados */}
-        <div className="flex items-center gap-4 text-gray-300 text-sm md:text-base font-medium">
-          <div className="flex items-center gap-1 text-primary">
+        <div className="flex items-center gap-4 text-sm font-medium text-gray-300 md:text-base">
+          <div className="text-primary flex items-center gap-1">
             <Star className="fill-primary text-primary size-4" />
             <span>9.9</span>
           </div>
@@ -32,14 +32,14 @@ export function MediaHero() {
 
         {/* Gênero */}
         <div className="flex items-center gap-4 text-xs md:text-sm">
-          <span className="uppercase text-gray-400 font-bold tracking-wider">
+          <span className="font-bold tracking-wider text-gray-400 uppercase">
             Gênero
           </span>
           <div className="flex gap-4">
-            <span className="bg-white/10 px-2 py-1 rounded backdrop-blur-md">
+            <span className="rounded bg-white/10 px-2 py-1 backdrop-blur-md">
               Suspense
             </span>
-            <span className="bg-white/10 px-2 py-1 rounded backdrop-blur-md">
+            <span className="rounded bg-white/10 px-2 py-1 backdrop-blur-md">
               Ação
             </span>
           </div>
@@ -48,7 +48,7 @@ export function MediaHero() {
         <h1 className="font-bebas text-5xl tracking-wide uppercase drop-shadow-lg">
           Fallout
         </h1>
-        <p className="text-gray-300 text-sm leading-relaxed">
+        <p className="text-sm leading-relaxed text-gray-300">
           Lorem ipsum, dolor sit amet consectetur adipisicing elit. Esse
           pariatur at quaerat debitis tenetur! Accusamus repellendus magnam
           saepe doloremque perspiciatis corporis debitis rerum beatae, pariatur
