@@ -2,7 +2,7 @@
 
 import { Compass, ListVideo, PlayCircle, Home } from "lucide-react";
 import Link from "next/link";
-import { usePathname } from "next/navigation"; // Para saber qual aba está ativa
+import { usePathname } from "next/navigation";
 
 export function BottomNavigationMobile() {
   const pathname = usePathname(); // Pega a rota atual (ex: /, /explorar)
@@ -15,17 +15,17 @@ export function BottomNavigationMobile() {
     },
     {
       name: "Explorar",
-      href: "/Explorar",
+      href: "/explorar",
       icon: <Compass size={24} />,
     },
     {
       name: "Minha Lista",
-      href: "/MinhaLista",
+      href: "/minhaLista",
       icon: <ListVideo size={24} />,
     },
     {
       name: "Assistidos",
-      href: "/Assistidos",
+      href: "/assistidos",
       icon: <PlayCircle size={24} />,
     },
   ];
@@ -50,33 +50,40 @@ export function BottomNavigationMobile() {
               key={item.name}
               href={item.href}
               className={`
-                flex flex-col items-center justify-center gap-1
                 w-full h-full
                 transition-all duration-300
-                ${isActive ? "text-primary" : "text-gray-500 hover:text-gray-300"}
               `}
             >
-              {/* Ícone com animação e brilho se ativo */}
               <div
                 className={`
-                relative p-1 rounded-xl transition-all duration-300
-                ${isActive ? "-translate-y-1" : ""}
-              `}
+                  flex flex-col items-center justify-center gap-1
+                  w-full h-full
+                  transition-all duration-300
+                  ${isActive ? "text-primary" : "text-gray-500 hover:text-gray-300"}
+                `}
               >
-                {item.icon}
+                {/* Ícone com animação e brilho se ativo */}
+                <div
+                  className={`
+                    relative p-1 rounded-xl transition-all duration-300
+                    ${isActive ? "-translate-y-1" : ""}
+                  `}
+                >
+                  {item.icon}
 
-                {/* Ponto de luz Neon atrás do ícone ativo */}
-                {isActive && (
-                  <span className="absolute inset-0 bg-primary/20 blur-lg rounded-full" />
-                )}
+                  {/* Ponto de luz Neon atrás do ícone ativo */}
+                  {isActive && (
+                    <span className="absolute inset-0 bg-primary/20 blur-lg rounded-full" />
+                  )}
+                </div>
+
+                {/* Texto (Opcional - em muitos apps modernos é só ícone ou texto bem pequeno) */}
+                <span
+                  className={`text-[10px] font-medium ${isActive ? "opacity-100" : "opacity-0 scale-0"} transition-all duration-300`}
+                >
+                  {item.name}
+                </span>
               </div>
-
-              {/* Texto (Opcional - em muitos apps modernos é só ícone ou texto bem pequeno) */}
-              <span
-                className={`text-[10px] font-medium ${isActive ? "opacity-100" : "opacity-0 scale-0"} transition-all duration-300`}
-              >
-                {item.name}
-              </span>
             </Link>
           );
         })}

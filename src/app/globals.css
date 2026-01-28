@@ -1,53 +1,53 @@
 @import "tailwindcss";
 
 @theme {
-    --color-primary: #6834df;
-    --color-primary-dark: #4821a3;
-    --color-secondary: #a65cf6;
-    --color-white: #f9f7f7;
-    --color-bg-dark: #05070a;
-    --color-details: #151b2b;
-    --color-detailsLight: #111315;
+  --color-primary: #6834df;
+  --color-primary-dark: #4821a3;
+  --color-secondary: #a65cf6;
+  --color-white: #f9f7f7;
+  --color-bg-dark: #05070a;
+  --color-details: #151b2b;
+  --color-detailsLight: #111315;
 
-    --font-inter: var(--font-inter), sans-serif;
-    --font-bebas: var(--font-bebasneue), sans-serif;
-    --font-orbitron: var(--font-orbitron), sans-serif;
+  --font-inter: var(--font-inter), sans-serif;
+  --font-bebas: var(--font-bebasneue), sans-serif;
+  --font-orbitron: var(--font-orbitron), sans-serif;
 }
 
 body {
-    @apply bg-bg-dark text-gray-200 antialiased;
+  @apply bg-bg-dark antialiased;
 
-    /* Aumenta o tamanho do background para dar suavidade */
-    background-size: 120% 120%;
+  /* Aumenta o tamanho do background para dar suavidade */
+  background-size: 120% 120%;
 
-    background-image:
-        radial-gradient(
-            circle at 10% 20%,
-            rgba(104, 52, 223, 0.25) 0%,
-            transparent 40%
-        ),
-        radial-gradient(
-            circle at 90% 80%,
-            rgba(72, 33, 163, 0.25) 0%,
-            transparent 40%
-        );
+  background-image:
+    radial-gradient(
+      circle at 10% 20%,
+      rgba(104, 52, 223, 0.25) 0%,
+      transparent 40%
+    ),
+    radial-gradient(
+      circle at 90% 80%,
+      rgba(72, 33, 163, 0.25) 0%,
+      transparent 40%
+    );
 
-    /* O 'fixed' faz o gradiente ficar preso na tela (janela), criando a ilusão de infinito */
+  /* O 'fixed' faz o gradiente ficar preso na tela (janela), criando a ilusão de infinito */
 
-    background-position: center;
-    background-repeat: no-repeat;
+  background-position: center;
+  background-repeat: no-repeat;
 
-    /* Use min-height para garantir que cubra tudo, mas sem limitar o scroll */
-    min-height: 100vh;
+  /* Use min-height para garantir que cubra tudo, mas sem limitar o scroll */
+  min-height: 100vh;
 
-    color: var(--color-white);
-    font-family: var(--font-inter);
+  color: var(--color-white);
+  font-family: var(--font-inter);
 }
 
 .clip-path-closed {
-    clip-path: circle(0% at 90% 5%);
+  clip-path: circle(0% at 90% 5%);
 }
 
 .clip-path-open {
-    clip-path: circle(150% at 90% 5%);
+  clip-path: circle(150% at 90% 5%);
 }

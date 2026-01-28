@@ -1,8 +1,4 @@
-"use client"; // Necessário para usar useState e interações
-
-import { useState } from "react";
-
-import { User2, Menu, Search } from "lucide-react";
+import { User2, Search } from "lucide-react";
 import ListItemNavBar from "./ListItemNavBar";
 
 //Components
@@ -19,9 +15,9 @@ export function Header() {
         </h1>
         <nav className="hidden md:block">
           <ul className="flex justify-between gap-10 text-base font-medium font-inter opacity-80">
-            <ListItemNavBar link="MinhaLista">Minha Lista</ListItemNavBar>
-            <ListItemNavBar link="Assistidos">Assistidos</ListItemNavBar>
-            <ListItemNavBar link="Explorar">Explorar</ListItemNavBar>
+            <ListItemNavBar link="minhaLista">Minha Lista</ListItemNavBar>
+            <ListItemNavBar link="assistidos">Assistidos</ListItemNavBar>
+            <ListItemNavBar link="explorar">Explorar</ListItemNavBar>
           </ul>
         </nav>
         <div className="flex items-center gap-10 ">
@@ -36,7 +32,7 @@ export function Header() {
               <Search className="size-6" />
             </button>
             <div className="bg-linear-to-tr from-primary rounded-full p-0.5">
-              <div className="bg-details p-3 rounded-full  hover:text-primary transition-colors duration-300">
+              <div className="bg-details p-3 rounded-full hover:text-primary transition-colors duration-300">
                 <User2 className="size-5" />
               </div>
             </div>

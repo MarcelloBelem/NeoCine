@@ -9,13 +9,13 @@ type Props = {
 
 const ListItemNavBar = ({ children, className = "", link }: Props) => {
   return (
-    <Link href={link}>
-      <li
-        className={`cursor-pointer hover:text-primary transition-all duration-300 hover:-translate-y-1 hover:text-lg ${className}`}
-      >
-        {children}
-      </li>
-    </Link>
+    <li
+      className={`cursor-pointer hover:text-primary transition-all duration-300 hover:-translate-y-1 hover:text-lg ${className}`}
+    >
+      <Link href={link}>
+        <span>{children}</span>
+      </Link>
+    </li>
   );
 };
 
