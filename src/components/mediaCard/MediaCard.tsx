@@ -1,10 +1,11 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Star } from "lucide-react";
-import { getGenresByIds, getImageUrl } from "@/lib/utils";
 
 //Components
 import { CardActions } from "./CardActions";
+import getGenresByIds from "@/lib/tmdb/getGenresByIds";
+import getImageUrl from "@/lib/tmdb/getImageUrl";
 
 interface MediaCardProps {
   visto: boolean;
