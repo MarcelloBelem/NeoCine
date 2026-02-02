@@ -1,23 +1,11 @@
-import { MediaCard } from "@/components/mediaCard/MediaCard";
-import { MediaHero } from "@/components/mediaHero/MediaHero";
-import Image from "next/image";
+import { MediaGrid } from "@/components/MediaGrid";
+import { getTrending } from "@/lib/tmdb";
 
-export default function Home() {
+export default async function Home() {
+  const movies = await getTrending();
   return (
     <div className="flex flex-col gap-24">
-      <div className="flex flex-col items-center justify-center gap-10">
-        <h1 className="font-orbitron text-3xl">Minha Lista</h1>
-        <div className="flex flex-wrap justify-center gap-5">
-          <MediaCard visto={false} />
-          <MediaCard visto={true} />
-          <MediaCard visto={false} />
-          <MediaCard visto={false} />
-          <MediaCard visto={false} />
-          <MediaCard visto={false} />
-          <MediaCard visto={false} />
-          <MediaCard visto={false} />
-        </div>
-      </div>
+      <MediaGrid title="Populares" movies={movies} />
     </div>
   );
 }
