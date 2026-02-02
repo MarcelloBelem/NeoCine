@@ -40,7 +40,7 @@ export default function RootLayout({
         className={`${inter.variable} ${bebasNeue.variable} ${orbitron.variable} antialiased`}
       >
         <Header />
-        <main className="min-h-screen pb-20 md:min-h-0 md:pb-0">
+        <main className="min-h-screen p-6 pt-24 pb-24 md:min-h-0 md:p-20 md:pt-32 md:pb-0">
           {children}
         </main>
         <BottomNavigationMobile />

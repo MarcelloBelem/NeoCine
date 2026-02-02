@@ -7,11 +7,11 @@ export function HeroActions() {
   const [click, setClick] = useState(false);
 
   return (
-    <div className="flex flex-col gap-4 mt-6 w-full max-w-sm">
+    <div className="mt-6 flex w-full max-w-sm flex-col gap-4 md:flex-row">
       {/* Botão Já Assisti - Estilo Outline/Escuro */}
       <button
         onClick={() => setClick(!click)}
-        className={`flex items-center justify-center gap-2 w-full py-3 rounded-lg border bg-bg-dark/50 backdrop-blur-sm font-medium hover:bg-white/10 transition-colors active:bg-white/10 ${click ? "border-gray-600 " : "border-primary "} `}
+        className={`bg-bg-dark/50 flex w-full items-center justify-center gap-2 rounded-lg border py-3 font-medium backdrop-blur-sm transition-colors hover:bg-white/10 active:bg-white/10 ${click ? "border-gray-600" : "border-primary"} `}
       >
         {click ? (
           <>
@@ -20,7 +20,7 @@ export function HeroActions() {
           </>
         ) : (
           <>
-            <Eye className="size-5 text-primary" />
+            <Eye className="text-primary size-5" />
             Assistido
           </>
         )}
@@ -29,7 +29,7 @@ export function HeroActions() {
       {/* Botão Adicionar à Lista - Estilo Sólido Branco */}
       <button
         onClick={() => setClick(!click)}
-        className={`flex items-center justify-center gap-2 w-full py-3 rounded-lg bg-white text-black font-bold hover:bg-gray-200 transition-colors`}
+        className={`flex w-full items-center justify-center gap-2 rounded-lg bg-white py-3 font-bold text-black transition-colors hover:bg-gray-200`}
       >
         {click ? (
           <>
@@ -38,7 +38,7 @@ export function HeroActions() {
           </>
         ) : (
           <>
-            <Bookmark className="size-5 text-yellow-500 fill-yellow-500" />
+            <Bookmark className="size-5 fill-yellow-500 text-yellow-500" />
             Na lista
           </>
         )}

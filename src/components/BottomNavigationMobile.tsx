@@ -31,17 +31,9 @@ export function BottomNavigationMobile() {
   ];
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 md:hidden">
+    <div className="fixed right-0 bottom-0 left-0 z-50 md:hidden">
       {/* Container com Glassmorphism */}
-      <nav
-        className="
-        flex justify-around items-center
-        w-full h-20 pb-safe px-2 
-        bg-bg-dark/90 backdrop-blur-xl
-        border-t border-white/5
-        shadow-[0_-5px_20px_rgba(0,0,0,0.5)]
-      "
-      >
+      <nav className="pb-safe bg-bg-dark/90 flex h-20 w-full items-center justify-around border-t border-white/5 px-2 shadow-[0_-5px_20px_rgba(0,0,0,0.5)] backdrop-blur-xl">
         {menuItems.map((item) => {
           const isActive = pathname === item.href;
 
@@ -49,37 +41,26 @@ export function BottomNavigationMobile() {
             <Link
               key={item.name}
               href={item.href}
-              className={`
-                w-full h-full
-                transition-all duration-300
-              `}
+              className={`h-full w-full transition-all duration-300 active:scale-90`}
             >
               <div
-                className={`
-                  flex flex-col items-center justify-center gap-1
-                  w-full h-full
-                  transition-all duration-300
-                  ${isActive ? "text-primary" : "text-gray-500 hover:text-gray-300"}
-                `}
+                className={`flex h-full w-full flex-col items-center justify-center gap-1 transition-all duration-300 ${isActive ? "text-primary" : "text-gray-500 hover:text-gray-300"} `}
               >
                 {/* Ícone com animação e brilho se ativo */}
                 <div
-                  className={`
-                    relative p-1 rounded-xl transition-all duration-300
-                    ${isActive ? "-translate-y-1" : ""}
-                  `}
+                  className={`relative rounded-xl p-1 transition-all duration-300 ${isActive ? "-translate-y-1" : ""} `}
                 >
                   {item.icon}
 
                   {/* Ponto de luz Neon atrás do ícone ativo */}
                   {isActive && (
-                    <span className="absolute inset-0 bg-primary/20 blur-lg rounded-full" />
+                    <span className="bg-primary/20 absolute inset-0 rounded-full blur-lg" />
                   )}
                 </div>
 
                 {/* Texto (Opcional - em muitos apps modernos é só ícone ou texto bem pequeno) */}
                 <span
-                  className={`text-[10px] font-medium ${isActive ? "opacity-100" : "opacity-0 scale-0"} transition-all duration-300`}
+                  className={`text-[10px] font-medium ${isActive ? "opacity-100" : "scale-0 opacity-0"} transition-all duration-300`}
                 >
                   {item.name}
                 </span>

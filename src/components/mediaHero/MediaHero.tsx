@@ -4,9 +4,9 @@ import { HeroActions } from "./HeroActions";
 
 export function MediaHero() {
   return (
-    <div className="relative px-6 pt-40">
+    <div className="pt-16">
       {/* Capa do filme */}
-      <div className="absolute inset-0 -z-20 h-full mask-b-to-transparent">
+      <div className="absolute inset-0 -z-20 h-full max-h-screen mask-b-to-transparent">
         <Image
           src="/fallout-bg.jpg"
           alt="Fallout Poster"
@@ -17,7 +17,7 @@ export function MediaHero() {
         <div className="absolute inset-0 bg-black/60" />
       </div>
 
-      <div className="flex flex-col gap-5">
+      <div className="flex flex-col justify-center gap-5 md:w-[50vw]">
         {/* Metadados */}
         <div className="flex items-center gap-4 text-sm font-medium text-gray-300 md:text-base">
           <div className="text-primary flex items-center gap-1">
@@ -52,7 +52,10 @@ export function MediaHero() {
           Lorem ipsum, dolor sit amet consectetur adipisicing elit. Esse
           pariatur at quaerat debitis tenetur! Accusamus repellendus magnam
           saepe doloremque perspiciatis corporis debitis rerum beatae, pariatur
-          laborum fugit molestiae earum consequatur.
+          laborum fugit molestiae earum consequatur. Lorem ipsum dolor sit amet
+          consectetur adipisicing elit. Repellat dolorum vel accusamus quos
+          ipsam modi quasi consequuntur cum ad veniam deleniti dolorem sapiente
+          facilis tenetur dicta similique, quod dolor consectetur!
         </p>
 
         <HeroActions />
