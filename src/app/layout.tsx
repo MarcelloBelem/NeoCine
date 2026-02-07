@@ -4,6 +4,7 @@ import "./globals.css";
 
 import { Header } from "@/components/header/Header";
 import { BottomNavigationMobile } from "@/components/BottomNavigationMobile";
+import { Suspense } from "react";
 
 const inter = Inter({
   subsets: ["latin"],

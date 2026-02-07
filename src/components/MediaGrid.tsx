@@ -1,40 +1,98 @@
+"use client";
+
+import { fetchMoreTrendingMedia } from "@/app/actions/tmdb.actions";
 import { MediaCard } from "@/components/mediaCard/MediaCard";
-import { TMDBBaseMedia, TMDBContent } from "@/types/tmdb";
+import { TMDBContent } from "@/types/tmdb";
+import { Loader2 } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useInView } from "react-intersection-observer";
 
 interface MediaGridProps {
   title: string;
-  movies: TMDBContent[] | null;
-  error?: string | null;
+  media: TMDBContent[] | null;
 }
 
-export async function MediaGrid({ title, movies, error }: MediaGridProps) {
+export function MediaGrid({ title, media }: MediaGridProps) {
+  const [mediaList, setMediaList] = useState<TMDBContent[]>(media || []);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+
+  const { ref, inView } = useInView({
+    threshold: 0,
+    rootMargin: "100px",
+  });
+
+  useEffect(() => {
+    // Se o elemento final está visível e temos mais páginas para carregar
+    if (inView && hasMore) {
+      loadMore();
+    }
+  }, [inView, hasMore]);
+
+  const loadMore = async () => {
+    const nextPage = page + 1;
+
+    try {
+      const newMedia = (await fetchMoreTrendingMedia(
+        nextPage,
+      )) as TMDBContent[];
+
+      if (newMedia && newMedia.length > 0) {
+        setMediaList((prev) => {
+          const existingIds = new Set(prev.map((p) => p.id));
+          const unique = newMedia.filter((m) => !existingIds.has(m.id));
+          return [...prev, ...unique];
+        });
+        setPage(nextPage);
+      } else {
+        setHasMore(false);
+      }
+    } catch (error) {
+      console.error("Erro ao carregar mais filmes:", error);
+      setHasMore(false);
+    }
+  };
+
+  if (!mediaList || mediaList.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center gap-10">
+        {title && <h1 className="font-orbitron text-3xl">{title}</h1>}
+        <div className="rounded-lg p-10 text-center">
+          <p className="font-bold text-red-500">
+            Não foi possível carregar as Mídias.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-col items-center justify-center gap-10">
       {title && <h1 className="font-orbitron text-3xl">{title}</h1>}
-
-      {!movies || error ? (
-        <div className="rounded-lg p-10 text-center">
-          <p className="font-bold text-red-500">
-            Não foi possível carregar os filmes {title?.toLowerCase()}.
-          </p>
-          <span className="text-sm text-gray-400">
-            Tente atualizar a página em instantes.
-          </span>
-        </div>
-      ) : (
-        <div className="flex flex-wrap justify-between gap-5">
-          {movies.map((movie) => (
+      <div className="grid w-full grid-cols-2 gap-4 sm:grid-cols-[repeat(auto-fit,minmax(220px,1fr))] sm:gap-6">
+        {mediaList.map((mediaItem, index) => {
+          if (mediaItem.media_type === "person") return null;
+          const uniqueKey = `${mediaItem.id}-${index}`;
+          const isMovie = mediaItem.media_type === "movie";
+          return (
             <MediaCard
-              key={movie.id}
-              title={movie.title || movie.name || "Sem título"}
+              key={uniqueKey}
+              id={mediaItem.id}
+              title={isMovie ? mediaItem.title : mediaItem.name}
               visto={false}
-              vote_average={movie.vote_average}
-              date={movie.release_date || movie.first_air_date || ""}
-              genre_ids={movie.genre_ids || []}
-              media_type={(movie.media_type || "movie") as "movie" | "tv"}
-              poster_path={movie.poster_path || ""}
+              vote_average={mediaItem.vote_average}
+              date={isMovie ? mediaItem.release_date : mediaItem.first_air_date}
+              genre_ids={mediaItem.genre_ids || []}
+              media_type={mediaItem.media_type}
+              poster_path={mediaItem.poster_path || ""}
             />
-          ))}
+          );
+        })}
+      </div>
+      {hasMore && (
+        <div ref={ref} className="flex w-full justify-center p-4">
+          {/* Loading Spinner Opcional */}
+          <Loader2 className="text-primary-dark h-8 w-8 animate-spin" />
         </div>
       )}
     </div>

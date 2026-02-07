@@ -2,7 +2,7 @@
 
 import { User2, Search } from "lucide-react";
 import { ListItemNavBar } from "./ListItemNavBar";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import Link from "next/link";
 
 //Components
@@ -35,11 +35,13 @@ export function Header() {
           <strong className="text-primary">Neo</strong>Cine
         </Link>
         <nav className="hidden md:block">
-          <ul className="font-inter flex justify-between gap-10 text-base font-medium opacity-80">
-            <ListItemNavBar link="explorar">Explorar</ListItemNavBar>
-            <ListItemNavBar link="minhaLista">Minha Lista</ListItemNavBar>
-            <ListItemNavBar link="assistidos">Assistidos</ListItemNavBar>
-          </ul>
+          <Suspense fallback={null}>
+            <ul className="font-inter flex justify-between gap-10 text-base font-medium opacity-80">
+              <ListItemNavBar link="explorar">Explorar</ListItemNavBar>
+              <ListItemNavBar link="minhaLista">Minha Lista</ListItemNavBar>
+              <ListItemNavBar link="assistidos">Assistidos</ListItemNavBar>
+            </ul>
+          </Suspense>
         </nav>
         <div className="flex items-center gap-10">
           <div className="group relative hidden items-center lg:flex">

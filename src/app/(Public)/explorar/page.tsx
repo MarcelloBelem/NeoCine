@@ -1,11 +1,12 @@
 import { MediaGrid } from "@/components/MediaGrid";
-import { getTrending } from "@/lib/tmdb";
+import { getTrendingMedia } from "@/lib/tmdb/tmdb";
 
 export default async function Home() {
-  const movies = await getTrending();
+  const media = await getTrendingMedia();
+
   return (
     <div className="flex flex-col gap-24">
-      <MediaGrid title="Populares" movies={movies} />
+      <MediaGrid title="Populares" media={media} />
     </div>
   );
 }

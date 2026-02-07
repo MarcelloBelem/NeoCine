@@ -1,33 +1,90 @@
 import Image from "next/image";
 import { Star } from "lucide-react";
+import getImageUrl from "@/lib/tmdb/getImageUrl";
+import { getMediaDetails } from "@/lib/tmdb/tmdb";
+
+//Components
 import { HeroActions } from "./HeroActions";
 
-export function MediaHero() {
+//Types
+import { MediaHeroProps } from "./MediaHero.types";
+import { genres } from "./MediaHero.types";
+import { TMDBMovieDetails, TMDBTVDetails } from "@/types/tmdb";
+
+export async function MediaHero({ mediaRef }: MediaHeroProps) {
+  const res = await getMediaDetails(mediaRef.id, mediaRef.media_type);
+
+  if (!res) {
+    return null; // Se não carregou, não exibe nada (ou retorne um esqueleto/erro)
+  }
+
+  const media = res.data;
+
+  const mediaType = res.mediaType;
+
+  const imageBackdropUrl = getImageUrl(media.backdrop_path, "original");
+  const imagePosterUrl = getImageUrl(media.poster_path, "original");
+
+  const isMovie =
+    mediaType === "movie"
+      ? {
+          title: (media as TMDBMovieDetails).title,
+          date: (media as TMDBMovieDetails).release_date,
+          length: (media as TMDBMovieDetails).runtime,
+          lengthUnit: "min",
+        }
+      : {
+          title: (media as TMDBTVDetails).name,
+          date: (media as TMDBTVDetails).first_air_date,
+          length: (media as TMDBTVDetails).number_of_seasons,
+          lengthUnit: "Temporadas",
+        };
+
   return (
     <div className="pt-16">
       {/* Capa do filme */}
       <div className="absolute inset-0 -z-20 h-full max-h-screen mask-b-to-transparent">
+        {/* Desktop */}
         <Image
-          src="/fallout-bg.jpg"
-          alt="Fallout Poster"
+          src={imageBackdropUrl}
+          alt={isMovie.title}
           fill
-          className="object-cover object-top"
+          className="hidden object-cover object-top opacity-60 md:block"
           priority
+          quality={90}
         />
-        <div className="absolute inset-0 bg-black/60" />
+
+        {/* Mobile */}
+        <Image
+          src={imagePosterUrl}
+          alt={isMovie.title}
+          fill
+          className="block object-cover object-top opacity-60 md:hidden"
+          priority
+          quality={90}
+        />
+
+        {/* <div className="bg-bg-dark/60 absolute inset-0" /> */}
       </div>
 
       <div className="flex flex-col justify-center gap-5 md:w-[50vw]">
         {/* Metadados */}
         <div className="flex items-center gap-4 text-sm font-medium text-gray-300 md:text-base">
-          <div className="text-primary flex items-center gap-1">
-            <Star className="fill-primary text-primary size-4" />
-            <span>9.9</span>
+          <div className="flex items-center gap-2">
+            <Star className="size-4 fill-yellow-500 text-yellow-500" />
+            <span className="text-sm">
+              {(Math.floor(media.vote_average * 10) / 10).toFixed(1)}
+            </span>
           </div>
           <span className="h-4 w-px bg-gray-500/50" />
-          <span>2025</span>
+          <span>
+            <span>{isMovie.date ? isMovie.date.split("-")[0] : "S/D"}</span>
+          </span>
           <span className="h-4 w-px bg-gray-500/50" />
-          <span>112min</span>
+          <span className="flex items-end justify-center gap-1">
+            <div>{isMovie.length}</div>
+            <div>{isMovie.lengthUnit}</div>
+          </span>
         </div>
 
         {/* Gênero */}
@@ -36,26 +93,22 @@ export function MediaHero() {
             Gênero
           </span>
           <div className="flex gap-4">
-            <span className="rounded bg-white/10 px-2 py-1 backdrop-blur-md">
-              Suspense
-            </span>
-            <span className="rounded bg-white/10 px-2 py-1 backdrop-blur-md">
-              Ação
-            </span>
+            {media.genres.slice(0, 2).map((genreName: genres) => (
+              <span
+                className="rounded bg-white/10 px-2 py-1 backdrop-blur-md"
+                key={genreName.id}
+              >
+                {genreName.name}
+              </span>
+            ))}
           </div>
         </div>
 
         <h1 className="font-bebas text-5xl tracking-wide uppercase drop-shadow-lg">
-          Fallout
+          {isMovie.title}
         </h1>
         <p className="text-sm leading-relaxed text-gray-300">
-          Lorem ipsum, dolor sit amet consectetur adipisicing elit. Esse
-          pariatur at quaerat debitis tenetur! Accusamus repellendus magnam
-          saepe doloremque perspiciatis corporis debitis rerum beatae, pariatur
-          laborum fugit molestiae earum consequatur. Lorem ipsum dolor sit amet
-          consectetur adipisicing elit. Repellat dolorum vel accusamus quos
-          ipsam modi quasi consequuntur cum ad veniam deleniti dolorem sapiente
-          facilis tenetur dicta similique, quod dolor consectetur!
+          {media.overview}
         </p>
 
         <HeroActions />
