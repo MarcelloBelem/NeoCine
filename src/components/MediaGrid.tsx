@@ -1,6 +1,5 @@
 "use client";
 
-import { fetchMoreTrendingMedia } from "@/app/actions/tmdb.actions";
 import { MediaCard } from "@/components/mediaCard/MediaCard";
 import { TMDBContent } from "@/types/tmdb";
 import { Loader2 } from "lucide-react";
@@ -8,14 +7,16 @@ import { useEffect, useState } from "react";
 import { useInView } from "react-intersection-observer";
 
 interface MediaGridProps {
-  title: string;
+  title?: string;
   media: TMDBContent[] | null;
+  fetchMoreAction: (page: number) => Promise<TMDBContent[]>;
 }
 
-export function MediaGrid({ title, media }: MediaGridProps) {
+export function MediaGrid({ title, media, fetchMoreAction }: MediaGridProps) {
   const [mediaList, setMediaList] = useState<TMDBContent[]>(media || []);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   const { ref, inView } = useInView({
     threshold: 0,
@@ -24,18 +25,21 @@ export function MediaGrid({ title, media }: MediaGridProps) {
 
   useEffect(() => {
     // Se o elemento final está visível e temos mais páginas para carregar
-    if (inView && hasMore) {
+    if (inView && hasMore && !isLoading) {
       loadMore();
     }
-  }, [inView, hasMore]);
+  }, [inView, hasMore, isLoading]);
 
   const loadMore = async () => {
+    if (isLoading) return; // Previne múltiplas chamadas simultâneas
+
+    setIsLoading(true);
     const nextPage = page + 1;
 
+    console.log("Carregando mais mídia, página:", nextPage);
+
     try {
-      const newMedia = (await fetchMoreTrendingMedia(
-        nextPage,
-      )) as TMDBContent[];
+      const newMedia = (await fetchMoreAction(nextPage)) as TMDBContent[];
 
       if (newMedia && newMedia.length > 0) {
         setMediaList((prev) => {
@@ -50,6 +54,8 @@ export function MediaGrid({ title, media }: MediaGridProps) {
     } catch (error) {
       console.error("Erro ao carregar mais filmes:", error);
       setHasMore(false);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -58,7 +64,7 @@ export function MediaGrid({ title, media }: MediaGridProps) {
       <div className="flex flex-col items-center justify-center gap-10">
         {title && <h1 className="font-orbitron text-3xl">{title}</h1>}
         <div className="rounded-lg p-10 text-center">
-          <p className="font-bold text-red-500">
+          <p className="font-bold text-gray-500">
             Não foi possível carregar as Mídias.
           </p>
         </div>
@@ -67,7 +73,7 @@ export function MediaGrid({ title, media }: MediaGridProps) {
   }
 
   return (
-    <div className="flex flex-col items-center justify-center gap-10">
+    <div className="flex flex-col gap-10">
       {title && <h1 className="font-orbitron text-3xl">{title}</h1>}
       <div className="grid w-full grid-cols-2 gap-4 sm:grid-cols-[repeat(auto-fit,minmax(220px,1fr))] sm:gap-6">
         {mediaList.map((mediaItem, index) => {

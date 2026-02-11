@@ -25,7 +25,7 @@ export function MediaCard({
   const genres =
     genre_ids && media_type ? getGenresByIds(genre_ids, media_type) : [];
 
-  const imageUrl = getImageUrl(poster_path, "w500");
+  const imageUrl = getImageUrl(poster_path, "w342");
 
   return (
     <Link
@@ -37,8 +37,9 @@ export function MediaCard({
           src={imageUrl}
           alt={title}
           fill
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 320px"
           className="object-cover object-top transition-transform duration-500 group-hover:scale-110"
-          priority
+          quality={60}
         />
       </div>
 

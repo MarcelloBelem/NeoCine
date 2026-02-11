@@ -2,13 +2,18 @@
 
 import { User2, Search } from "lucide-react";
 import { ListItemNavBar } from "./ListItemNavBar";
-import { Suspense, useEffect, useState } from "react";
+import { Suspense, useEffect, useState, KeyboardEvent } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 //Components
+import { MobileSearchModal } from "./MobileSearchModal";
 
 export function Header() {
   const [scrolled, setScrolled] = useState<boolean>(false);
+  const [desktopQuery, setDesktopQuery] = useState<string>("");
+  const [isMobileSearchOpen, setIsMobileSearchOpen] = useState<boolean>(false);
+  const router = useRouter();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -18,6 +23,18 @@ export function Header() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  const handleSearch = () => {
+    if (desktopQuery?.trim()) {
+      router.push(`/explorar/${encodeURIComponent(desktopQuery)}`);
+      setDesktopQuery("");
+    }
+  };
+  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      handleSearch();
+    }
+  };
 
   return (
     <>
@@ -48,12 +65,25 @@ export function Header() {
             <input
               type="text"
               placeholder="Buscar títulos..."
+              value={desktopQuery}
+              onChange={(e) => {
+                setDesktopQuery(e.target.value);
+              }}
+              onKeyDown={handleKeyDown}
               className="focus:border-primary/50 w-48 rounded-full border border-white/10 bg-white/5 px-5 py-2 text-sm backdrop-blur-sm transition-all duration-500 outline-none focus:w-64 focus:bg-white/10"
             />
-            <Search className="group-focus-within:text-primary pointer-events-none absolute right-4 size-4 text-white/40 transition-colors" />
+            <button
+              onClick={handleSearch}
+              className="absolute right-4 cursor-pointer"
+            >
+              <Search className="group-focus-within:text-primary pointer-events-none size-4 text-white/40 transition-colors" />
+            </button>
           </div>
           <div className="flex items-center gap-8">
-            <button className="active:text-primary transition-colors duration-300 md:hidden">
+            <button
+              onClick={() => setIsMobileSearchOpen(true)}
+              className="active:text-primary transition-colors duration-300 md:hidden"
+            >
               <Search className="size-6" />
             </button>
             <div className="from-primary rounded-full bg-linear-to-tr p-0.5 active:scale-90">
@@ -64,6 +94,10 @@ export function Header() {
           </div>
         </div>
       </header>
+      <MobileSearchModal
+        isOpen={isMobileSearchOpen}
+        onClose={() => setIsMobileSearchOpen(false)}
+      />
     </>
   );
 }

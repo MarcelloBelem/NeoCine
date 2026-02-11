@@ -2,6 +2,7 @@
 
 import { TMDBContent, TMDBContentDetails } from "@/types/tmdb";
 import { cacheLife } from "next/cache";
+import { filterAndSortResults } from "./utils";
 
 const BASE_URL = "https://api.themoviedb.org/3";
 const headers = {
@@ -64,6 +65,40 @@ export async function getMediaDetails(
     return { data, mediaType };
   } catch (error) {
     console.error("Error ao buscar media", error);
+    return null;
+  }
+}
+
+export async function getSearchMedia(
+  query: string,
+  page = 1,
+): Promise<TMDBContent[] | null> {
+  cacheLife("hours");
+
+  try {
+    /* 
+    // --- SIMULAÇÃO DE FALHA (Descomente a linha abaixo para testar) ---
+    throw new Error("ERRO SIMULADO: Falha ao conectar com o TMDB"); */
+
+    const res = await fetch(
+      `${BASE_URL}/search/multi?query=${query}&include_adult=true&language=pt-BR&page=${page}`,
+      {
+        headers: headers,
+      },
+    );
+
+    if (!res.ok) {
+      throw new Error(`Erro na API TMDB: ${res.status}`);
+    }
+
+    const data = await res.json();
+
+    const results = data.results as TMDBContent[];
+
+    return filterAndSortResults(results);
+    /*  return results.filter((item) => item.media_type !== "person"); */
+  } catch (error) {
+    console.error("Error ao buscar mídias", error);
     return null;
   }
 }

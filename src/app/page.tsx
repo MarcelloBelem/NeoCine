@@ -1,8 +1,10 @@
-import { MediaHero } from "@/components/mediaHero/MediaHero";
-import { MediaGrid } from "@/components/MediaGrid";
 import { getTrendingMedia } from "@/lib/tmdb/tmdb";
 import { Suspense } from "react";
 import { Loader2 } from "lucide-react";
+
+//componets
+import { MediaHero } from "@/components/mediaHero/MediaHero";
+import { MediaGrid } from "@/components/MediaGrid";
 
 export default async function Home() {
   const media = await getTrendingMedia();
@@ -23,6 +25,12 @@ export default async function Home() {
 
   const gridItems = media.slice(1);
 
+  async function loadMoreTrending(page: number) {
+    "use server";
+    const result = await getTrendingMedia(page);
+    return result ?? [];
+  }
+
   return (
     <div className="flex flex-col gap-24">
       <Suspense
@@ -33,7 +41,11 @@ export default async function Home() {
         }
       >
         <MediaHero mediaRef={heroItemData} />
-        <MediaGrid title="Populares" media={gridItems} />
+        <MediaGrid
+          title="Populares"
+          media={gridItems}
+          fetchMoreAction={loadMoreTrending}
+        />
       </Suspense>
     </div>
   );
