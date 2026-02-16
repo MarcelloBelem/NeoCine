@@ -19,13 +19,14 @@ export function ActiveLink({
 }: ActiveLinkProps) {
   const pathname = usePathname();
 
-  // Verifica se a URL atual corresponde ao link
-  const isActive = pathname === props.href.toString();
+  const isActive =
+    props.href === "/"
+      ? pathname === "/"
+      : pathname === props.href || pathname.startsWith(`${props.href}/`);
 
   return (
     <Link
       {...props}
-      // Combina a classe padrão com a ativa (se for o caso)
       className={`${className} ${isActive ? activeClassName : ""}`}
     >
       {children}

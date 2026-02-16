@@ -87,9 +87,12 @@ export function Header() {
               <Search className="size-6" />
             </button>
             <div className="from-primary rounded-full bg-linear-to-tr p-0.5 active:scale-90">
-              <div className="bg-details hover:text-primary rounded-full p-3 transition-colors duration-300">
+              <Link
+                href="/perfil"
+                className="bg-details hover:text-primary inline-flex rounded-full p-3 transition-colors duration-300"
+              >
                 <User2 className="size-5" />
-              </div>
+              </Link>
             </div>
           </div>
         </div>

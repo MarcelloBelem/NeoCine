@@ -29,7 +29,7 @@ export function MediaCard({
 
   return (
     <Link
-      href={`/${media_type}/${id}`}
+      href={`/media/${media_type}/${id}`}
       className={`group active:bg-primary/50 hover:bg-primary/30 relative flex h-80 w-full flex-col justify-between overflow-hidden rounded-2xl border p-2.5 transition-colors duration-500 md:h-100 md:max-w-xs md:p-5 ${vistoSalvo ? "border-primary" : "border-gray-600"} `}
     >
       <div className="absolute inset-0 -z-20 h-full">
