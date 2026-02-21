@@ -1,0 +1,53 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+  moduleFormat    = "cjs"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum  WatchStatus {
+  WATCHED
+  PLAN_TO_WATCH
+}
+
+enum MediaType {
+  MOVIE
+  TV
+}
+
+model User {
+  id String @id @default(cuid())
+  name String 
+  email String @unique
+  birthdate DateTime
+  password String
+  media UserMedia[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Media {
+  id  Int @id @default(autoincrement())
+  tmdbId Int @unique
+  type MediaType
+  duration Int?
+  users UserMedia[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model UserMedia{
+  id Int @id @default(autoincrement())
+  userId String
+  mediaId Int
+  status WatchStatus
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id])
+  media Media @relation(fields: [mediaId], references: [id])
+  @@unique([userId, mediaId, status])
+}
