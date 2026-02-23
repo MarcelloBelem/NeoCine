@@ -11,6 +11,7 @@ CREATE TABLE "User" (
     "email" TEXT NOT NULL,
     "birthdate" TIMESTAMP(3) NOT NULL,
     "password" TEXT NOT NULL,
+    "bio" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 

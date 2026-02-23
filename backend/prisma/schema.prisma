@@ -24,6 +24,7 @@ model User {
   email String @unique
   birthdate DateTime
   password String
+  bio String? 
   media UserMedia[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
