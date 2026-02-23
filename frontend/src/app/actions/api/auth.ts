@@ -34,3 +34,10 @@ export async function registerAction(formData: RegisterData) {
 
   return res;
 }
+
+export async function logoutAction() {
+  const cookieStore = await cookies();
+  cookieStore.delete("auth_token");
+
+  return { success: true, message: "Saindo com sucesso" };
+}
