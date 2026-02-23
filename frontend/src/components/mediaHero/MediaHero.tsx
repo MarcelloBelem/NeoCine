@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { Star } from "lucide-react";
-import getImageUrl from "@/lib/tmdb/getImageUrl";
-import { getMediaDetails } from "@/lib/tmdb/tmdb";
+import getImageUrl from "@/service/tmdb/getImageUrl";
+import { getMediaDetails } from "@/service/tmdb/tmdb";
 
 //Components
 import { HeroActions } from "./HeroActions";

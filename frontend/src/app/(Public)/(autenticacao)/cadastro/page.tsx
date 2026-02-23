@@ -11,17 +11,37 @@ import {
   EyeOff,
   Calendar,
 } from "lucide-react";
-import { z } from "zod";
+import { success, z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FormInput } from "@/components/FormInput";
-import { ImprovedToast } from "@/components/ImprovedToast";
+import { useToast } from "@/components/ImprovedToast";
+import { registerAction } from "@/app/actions/api/auth";
+import { useRouter } from "next/navigation";
 
 const registerSchema = z
   .object({
     name: z.string().min(2, "O nome deve conter pelo menos 2 caracteres"),
     email: z.string().email("Email inválido"),
-    birthDate: z.string().min(1, "Data de nascimento é obrigatória"),
+    birthdate: z
+      .string()
+      .min(1, "Data de nascimento é obrigatória")
+      .refine((date) => {
+        const birthDate = new Date(date);
+        const today = new Date();
+
+        let age = today.getFullYear() - birthDate.getFullYear();
+        const monthDiff = today.getMonth() - birthDate.getMonth();
+
+        if (
+          monthDiff < 0 ||
+          (monthDiff === 0 && today.getDate() < birthDate.getDate())
+        ) {
+          age--;
+        }
+
+        return age >= 5;
+      }, "Você deve ter pelo menos 5 anos de idade"),
     password: z.string().min(6, "A senha deve conter pelo menos 6 caracteres"),
     confirmPassword: z
       .string()
@@ -33,8 +53,12 @@ const registerSchema = z
   });
 
 export default function Register() {
+  const router = useRouter();
+  const { showToast } = useToast();
+
   const {
     register,
+    setError,
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm({
@@ -43,43 +67,37 @@ export default function Register() {
 
   type RegisterData = z.infer<typeof registerSchema>;
 
-  const [toast, setToast] = useState<{
-    message: string;
-    type: "erro" | "confirmado" | "cuidado";
-  } | null>(null);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const handleRegister = async (data: RegisterData) => {
-    console.log("Cadastrando...", data);
+    const res = await registerAction(data);
 
-    try {
-      await new Promise((resolve) => setTimeout(resolve, 3000));
+    if (!res.success) {
+      showToast({ conteudo: res.message, tipo: "erro" });
 
-      setToast({
-        message: `Bem-vindo! Conta criada com sucesso.`,
-        type: "confirmado",
+      setError("email", {
+        type: "manual",
+        message: "Verifique seu e-mail",
       });
-    } catch (error) {
-      setToast({
-        message: "Erro ao criar conta. Tente novamente.",
-        type: "erro",
+      setError("password", {
+        type: "manual",
+        message: "Senha incorreta",
       });
+
+      return;
     }
+
+    console.log("Sucesso! Dados do usuário:", res.data);
+    showToast({ conteudo: res.data.message, tipo: "confirmado" });
+
+    router.refresh();
+
+    router.push("/login");
   };
 
   return (
     <div>
-      {/* Toast de feedback */}
-      {toast && (
-        <ImprovedToast
-          conteudo={toast.message}
-          tipo={toast.type}
-          duration={toast.type === "confirmado" ? 3000 : 4000}
-          onClose={() => setToast(null)}
-        />
-      )}
-
       <form
         onSubmit={handleSubmit(handleRegister)}
         className="relative z-10 flex flex-col gap-4"
@@ -105,11 +123,11 @@ export default function Register() {
         </div>
 
         <FormInput
-          id="birthDate"
+          id="birthdate"
           type="date"
           placeholder="DD/MM/AAAA"
           icon={<Calendar className="h-5 w-5" />}
-          error={errors.birthDate}
+          error={errors.birthdate}
           register={register}
         />
 

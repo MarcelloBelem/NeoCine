@@ -4,8 +4,8 @@ import { Star } from "lucide-react";
 
 //Components
 import { CardActions } from "./CardActions";
-import getGenresByIds from "@/lib/tmdb/getGenresByIds";
-import getImageUrl from "@/lib/tmdb/getImageUrl";
+import getGenresByIds from "@/service/tmdb/getGenresByIds";
+import getImageUrl from "@/service/tmdb/getImageUrl";
 
 //Types
 import { MediaCardProps } from "./MediaCard.types";

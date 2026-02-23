@@ -7,47 +7,52 @@
   --color-white: #f9f7f7;
   --color-bg-dark: #05070a;
   --color-details: #151b2b;
-  --color-detailsLight: #111315;
+  --color-details-light: #111315;
 
   --font-inter: var(--font-inter), sans-serif;
   --font-bebas: var(--font-bebasneue), sans-serif;
   --font-orbitron: var(--font-orbitron), sans-serif;
 }
 
-body {
-  @apply bg-bg-dark antialiased;
+@layer base {
+  input:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0px 1000px #111418 inset !important;
+    -webkit-text-fill-color: white !important;
+    transition: background-color 5000s ease-in-out 0s;
+  }
 
-  /* Aumenta o tamanho do background para dar suavidade */
-  background-size: 120% 120%;
+  body {
+    background-color: var(--color-bg-dark);
+    color: var(--color-white);
+    font-family: var(--font-inter);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 
-  background-image:
-    radial-gradient(
-      circle at 10% 20%,
-      rgba(104, 52, 223, 0.25) 0%,
-      transparent 40%
-    ),
-    radial-gradient(
-      circle at 90% 80%,
-      rgba(72, 33, 163, 0.25) 0%,
-      transparent 40%
-    );
+    min-height: 100vh;
+    background-size: 120% 120%;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
 
-  /* O 'fixed' faz o gradiente ficar preso na tela (janela), criando a ilusão de infinito */
-
-  background-position: center;
-  background-repeat: no-repeat;
-
-  /* Use min-height para garantir que cubra tudo, mas sem limitar o scroll */
-  min-height: 100vh;
-
-  color: var(--color-white);
-  font-family: var(--font-inter);
+    background-image:
+      radial-gradient(
+        circle at 10% 20%,
+        rgba(104, 52, 223, 0.25) 0%,
+        transparent 40%
+      ),
+      radial-gradient(
+        circle at 90% 80%,
+        rgba(72, 33, 163, 0.25) 0%,
+        transparent 40%
+      );
+  }
 }
 
-.clip-path-closed {
+/* Utilitários Customizados */
+@utility clip-path-closed {
   clip-path: circle(0% at 90% 5%);
 }
 
-.clip-path-open {
+@utility clip-path-open {
   clip-path: circle(150% at 90% 5%);
 }

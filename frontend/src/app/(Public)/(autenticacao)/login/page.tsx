@@ -7,7 +7,9 @@ import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FormInput } from "@/components/FormInput";
-import { ImprovedToast } from "@/components/ImprovedToast";
+import { useToast } from "@/components/ImprovedToast";
+import { loginAction } from "@/app/actions/api/auth";
+import { useRouter } from "next/navigation";
 
 const loginSchema = z.object({
   email: z.string().email("Email inválido"),
@@ -15,9 +17,13 @@ const loginSchema = z.object({
 });
 
 export default function Login() {
+  const router = useRouter();
+  const { showToast } = useToast();
+
   const {
     register,
     handleSubmit,
+    setError,
     formState: { errors, isSubmitting },
   } = useForm({ resolver: zodResolver(loginSchema) });
 
@@ -26,11 +32,28 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
 
   const handleLogin = async (data: LoginData) => {
-    console.log("Logando...", data);
+    const res = await loginAction(data);
 
-    await new Promise((resolve) => setTimeout(resolve, 3000));
+    if (!res.success) {
+      showToast({ conteudo: res.message, tipo: "erro" });
 
-    console.log("Login finalizado");
+      setError("email", {
+        type: "manual",
+        message: "Verifique seu e-mail",
+      });
+      setError("password", {
+        type: "manual",
+        message: "Senha incorreta",
+      });
+
+      return;
+    }
+
+    console.log("Sucesso! Dados do usuário:", res.data);
+    showToast({ conteudo: res.data.message, tipo: "confirmado" });
+    router.refresh();
+
+    router.push("/");
   };
 
   return (

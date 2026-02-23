@@ -1,4 +1,4 @@
-import { getTrendingMedia } from "@/lib/tmdb/tmdb";
+import { getTrendingMedia } from "@/service/tmdb/tmdb";
 import { Suspense } from "react";
 import { Loader2 } from "lucide-react";
 

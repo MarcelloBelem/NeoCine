@@ -1,5 +1,5 @@
 import { MediaGrid } from "@/components/MediaGrid";
-import { getSearchMedia } from "@/lib/tmdb/tmdb";
+import { getSearchMedia } from "@/service/tmdb/tmdb";
 
 type Props = {
   params: Promise<{ query: string }>;

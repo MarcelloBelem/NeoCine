@@ -1,121 +1,178 @@
 "use client";
 
-import { JSX, useEffect, useState } from "react";
+import {
+  createContext,
+  JSX,
+  ReactNode,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { CheckCircle2, AlertTriangle, XCircle, X } from "lucide-react";
 
 type ToastType = "erro" | "confirmado" | "cuidado";
 
-interface ImprovedToastProps {
+interface ToastOptions {
   conteudo: string;
   tipo: ToastType;
+  titulo?: string;
   duration?: number;
-  onClose?: () => void;
 }
 
-const toastStyles: Record<ToastType, { label: string; classes: string }> = {
+interface ToastItem extends ToastOptions {
+  id: string;
+}
+
+interface ToastContextValue {
+  showToast: (toast: ToastOptions) => string;
+  dismissToast: (id: string) => void;
+}
+
+const ToastContext = createContext<ToastContextValue | null>(null);
+
+const toastStyles: Record<
+  ToastType,
+  { label: string; classes: string; iconColor: string }
+> = {
   confirmado: {
     label: "Sucesso",
     classes:
-      "border-emerald-400/40 bg-emerald-500/15 text-emerald-50 shadow-emerald-500/25",
+      "border-emerald-500/20 bg-emerald-950/40 text-emerald-50 shadow-emerald-950/20",
+    iconColor: "text-emerald-400",
   },
   cuidado: {
     label: "Aviso",
     classes:
-      "border-amber-400/40 bg-amber-500/15 text-amber-50 shadow-amber-500/25",
+      "border-amber-500/20 bg-amber-950/40 text-amber-50 shadow-amber-950/20",
+    iconColor: "text-amber-400",
   },
   erro: {
     label: "Erro",
-    classes: "border-red-400/40 bg-red-500/15 text-red-50 shadow-red-500/25",
+    classes: "border-red-500/20 bg-red-950/40 text-red-50 shadow-red-950/20",
+    iconColor: "text-red-400",
   },
 };
 
 const toastIcons: Record<ToastType, JSX.Element> = {
-  confirmado: (
-    <CheckCircle2 className="size-5 flex-shrink-0 text-emerald-300" />
-  ),
-  cuidado: <AlertTriangle className="size-5 flex-shrink-0 text-amber-300" />,
-  erro: <XCircle className="size-5 flex-shrink-0 text-red-300" />,
+  confirmado: <CheckCircle2 className="size-4 shrink-0" />,
+  cuidado: <AlertTriangle className="size-4 shrink-0" />,
+  erro: <XCircle className="size-4 shrink-0" />,
 };
 
-export function ImprovedToast({
+function ImprovedToast({
+  id,
   conteudo,
   tipo,
+  titulo,
   duration = 4000,
   onClose,
-}: ImprovedToastProps) {
-  const [isVisible, setIsVisible] = useState(true);
+}: ToastItem & { onClose: (id: string) => void }) {
   const [isExiting, setIsExiting] = useState(false);
-  const { label, classes } = toastStyles[tipo];
-  const role = tipo === "confirmado" ? "status" : "alert";
+  const { label, classes, iconColor } = toastStyles[tipo];
 
   useEffect(() => {
-    if (duration && isVisible) {
-      const timer = setTimeout(() => {
-        handleClose();
-      }, duration);
-
-      return () => clearTimeout(timer);
-    }
-  }, [isVisible, duration]);
+    const timer = setTimeout(() => handleClose(), duration);
+    return () => clearTimeout(timer);
+  }, [duration]);
 
   const handleClose = () => {
     setIsExiting(true);
-    setTimeout(() => {
-      setIsVisible(false);
-      onClose?.();
-    }, 300);
+    setTimeout(() => onClose(id), 300);
   };
-
-  if (!isVisible) return null;
 
   return (
     <div
-      role={role}
-      aria-live={tipo === "confirmado" ? "polite" : "assertive"}
-      className={`fixed right-4 bottom-6 left-4 z-50 max-w-md rounded-2xl border p-4 shadow-2xl backdrop-blur-md transition-all duration-300 md:right-8 md:bottom-8 md:left-auto ${
+      role={tipo === "confirmado" ? "status" : "alert"}
+      className={`group pointer-events-auto relative w-full max-w-full overflow-hidden rounded-xl border backdrop-blur-md transition-all duration-300 ease-out md:max-w-[320px] ${
         isExiting
-          ? "animate-out fade-out slide-out-to-bottom-2"
-          : "animate-in fade-in slide-in-from-bottom-4"
+          ? "translate-x-10 scale-95 opacity-0"
+          : "animate-in slide-in-from-right-5 translate-x-0 scale-100 opacity-100"
       } ${classes}`}
     >
-      <div className="flex items-start gap-3">
-        <div className="mt-0.5">{toastIcons[tipo]}</div>
+      <div className="flex items-center gap-3 p-3">
+        {/* Ícone menor e mais discreto */}
+        <div
+          className={`flex size-8 shrink-0 items-center justify-center rounded-lg bg-white/5 ${iconColor}`}
+        >
+          {toastIcons[tipo]}
+        </div>
 
-        <div className="flex-1">
-          <div className="flex items-center justify-between gap-2">
-            <span className="text-xs font-semibold tracking-widest uppercase opacity-80">
-              {label}
+        <div className="flex-1 overflow-hidden">
+          <div className="flex items-center justify-between">
+            <span className="text-[10px] font-bold tracking-[0.15em] uppercase opacity-50">
+              {titulo || label}
             </span>
             <button
               onClick={handleClose}
-              className="-mr-1 p-0.5 text-white/60 transition-colors hover:text-white"
-              aria-label="Fechar notificação"
+              className="rounded-md p-1 opacity-100 transition-opacity hover:bg-white/10 md:opacity-0 md:group-hover:opacity-100"
             >
-              <X className="size-4" />
+              <X className="size-3 text-white/50" />
             </button>
           </div>
-          <p className="mt-1 text-sm leading-relaxed text-white/95">
+          <p className="truncate text-[13px] font-medium text-white/90">
             {conteudo}
           </p>
         </div>
       </div>
 
-      {/* Barra de progresso do auto-close */}
-      {duration && (
+      {/* Barra de progresso ultra-fina */}
+      <div className="absolute bottom-0 left-0 h-0.5 w-full bg-white/5">
         <div
-          className="absolute bottom-0 left-0 h-0.5 rounded-b-2xl bg-gradient-to-r from-transparent to-white/40"
+          className={`h-full bg-white/30 transition-all`}
           style={{
-            animation: isExiting ? "none" : `shrink ${duration}ms linear`,
+            animation: isExiting
+              ? "none"
+              : `shrink ${duration}ms linear forwards`,
           }}
         />
-      )}
-
-      <style>{`
-        @keyframes shrink {
-          from { width: 100%; }
-          to { width: 0; }
-        }
-      `}</style>
+      </div>
     </div>
   );
 }
+
+export function ImprovedToastProvider({ children }: { children: ReactNode }) {
+  const [toasts, setToasts] = useState<ToastItem[]>([]);
+
+  const dismissToast = (id: string) =>
+    setToasts((p) => p.filter((t) => t.id !== id));
+
+  const showToast = ({
+    conteudo,
+    tipo,
+    titulo,
+    duration = 4000,
+  }: ToastOptions) => {
+    const id = crypto.randomUUID();
+    setToasts((prev) => [
+      ...prev.slice(-3),
+      { id, conteudo, tipo, titulo, duration },
+    ]);
+    return id;
+  };
+
+  const value = useMemo(() => ({ showToast, dismissToast }), []);
+
+  return (
+    <ToastContext.Provider value={value}>
+      {children}
+      <div className="pointer-events-none fixed top-20 right-4 left-4 z-50 flex flex-col gap-3 md:top-8 md:right-8 md:left-auto md:items-end">
+        {toasts.map((toast) => (
+          <ImprovedToast key={toast.id} {...toast} onClose={dismissToast} />
+        ))}
+      </div>
+      <style>{`
+        @keyframes shrink {
+          from { width: 100%; }
+          to { width: 0%; }
+        }
+      `}</style>
+    </ToastContext.Provider>
+  );
+}
+
+export const useToast = () => {
+  const context = useContext(ToastContext);
+  if (!context) throw new Error("useToast must be used within Provider");
+  return context;
+};

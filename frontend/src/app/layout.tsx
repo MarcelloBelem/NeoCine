@@ -4,7 +4,7 @@ import "./globals.css";
 
 import { Header } from "@/components/header/Header";
 import { BottomNavigationMobile } from "@/components/BottomNavigationMobile";
-import { Suspense } from "react";
+import { ImprovedToastProvider } from "@/components/ImprovedToast";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -40,11 +40,13 @@ export default function RootLayout({
       <body
         className={`${inter.variable} ${bebasNeue.variable} ${orbitron.variable} antialiased`}
       >
-        <Header />
-        <main className="min-h-screen p-6 pt-24 pb-24 md:min-h-0 md:p-20 md:pt-32 md:pb-0">
-          {children}
-        </main>
-        <BottomNavigationMobile />
+        <ImprovedToastProvider>
+          <Header />
+          <main className="min-h-screen p-6 pt-24 pb-24 md:min-h-0 md:p-20 md:pt-32 md:pb-0">
+            {children}
+          </main>
+          <BottomNavigationMobile />
+        </ImprovedToastProvider>
       </body>
     </html>
   );

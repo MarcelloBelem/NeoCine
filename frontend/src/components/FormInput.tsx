@@ -45,7 +45,7 @@ export function FormInput({
       </div>
 
       <div
-        className={`hover:border-primary/50 focus-within:border-primary relative flex items-center overflow-hidden rounded-xl border-2 transition-all duration-300 ${
+        className={`hover:border-primary/50 focus-within:border-primary relative flex items-center gap-2 overflow-hidden rounded-xl border-2 transition-all duration-300 ${
           hasError
             ? "border-red-500/60 bg-red-500/5 shadow-sm shadow-red-500/20"
             : "border-gray-600/30 bg-white/5"
@@ -61,7 +61,7 @@ export function FormInput({
           id={id}
           type={type}
           placeholder={placeholder}
-          className={`w-full bg-transparent px-4 py-3 text-white placeholder-white/40 transition-colors outline-none ${
+          className={`w-full bg-transparent px-2 py-3 text-white placeholder-white/40 transition-colors outline-none ${
             hasError ? "placeholder-red-300/40" : ""
           }`}
           {...register(id)}
