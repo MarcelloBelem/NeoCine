@@ -14,8 +14,12 @@ import {
   getStatusMediaAction,
   updateStatusMediaAction,
 } from "@/app/actions/api/media";
+import { cookies } from "next/headers";
 
 export async function MediaHero({ mediaRef }: MediaHeroProps) {
+  const cookieStore = await cookies();
+  const isAuthenticated = Boolean(cookieStore.get("auth_token")?.value);
+
   const res = await getMediaDetails(mediaRef.id, mediaRef.media_type);
 
   if (!res) {
@@ -61,8 +65,6 @@ export async function MediaHero({ mediaRef }: MediaHeroProps) {
     };
 
     const res = await updateStatusMediaAction(data);
-
-    console.log("Update Status Response:", res);
   };
 
   return (
@@ -137,6 +139,7 @@ export async function MediaHero({ mediaRef }: MediaHeroProps) {
         </p>
 
         <HeroActions
+          isAuthenticated={isAuthenticated}
           updateStatusAction={handleUpdateStatus}
           initialStatus={{
             isWatched: mediaStatus.isWatched,

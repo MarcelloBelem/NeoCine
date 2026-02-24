@@ -2,22 +2,35 @@
 
 import { Eye, EyeClosed, Bookmark } from "lucide-react";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { HeroActionsProps } from "./MediaHero.types";
 
 export function HeroActions({
+  isAuthenticated,
   updateStatusAction,
   initialStatus,
 }: HeroActionsProps) {
+  const router = useRouter();
   const [isWatched, setIsWatched] = useState(initialStatus.isWatched);
   const [inWatchlist, setInWatchlist] = useState(initialStatus.isWatchlist);
 
   const handleToggleWatched = async () => {
+    if (!isAuthenticated) {
+      router.push("/login");
+      return;
+    }
+
     const nextValue = !isWatched;
     setIsWatched(nextValue);
     await updateStatusAction({ isWatched: nextValue });
   };
 
   const handleToggleWatchlist = async () => {
+    if (!isAuthenticated) {
+      router.push("/login");
+      return;
+    }
+
     const nextValue = !inWatchlist;
     setInWatchlist(nextValue);
     await updateStatusAction({ inWatchlist: nextValue });

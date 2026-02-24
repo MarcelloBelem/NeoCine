@@ -83,9 +83,9 @@ export function MediaCard({
           <h1 className="font-orbitron line-clamp-2 text-xs font-medium tracking-wider md:text-base">
             {title}
           </h1>
-          <div className="hidden">
+          {/* <div className="hidden">
             <CardActions />
-          </div>
+          </div> */}
         </div>
       </div>
     </Link>

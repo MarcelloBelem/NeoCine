@@ -8,6 +8,7 @@ export interface UpdateStatusPayload {
 }
 
 export interface HeroActionsProps {
+  isAuthenticated: boolean;
   updateStatusAction: (updateData: UpdateStatusPayload) => Promise<void>;
   initialStatus: {
     isWatched: boolean;

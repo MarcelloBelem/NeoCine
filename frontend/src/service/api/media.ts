@@ -7,7 +7,6 @@ type GetStatusMediaResult =
 
 export async function updateStatusMedia(mediaData: UpdateStatusMedia) {
   try {
-    console.log("Updating media status with data:", mediaData);
     const res = await fetchAuth(`media/${mediaData.id}`, {
       method: "PATCH",
       body: JSON.stringify({
