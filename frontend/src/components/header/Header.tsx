@@ -82,7 +82,7 @@ export function Header() {
           <div className="flex items-center gap-8">
             <button
               onClick={() => setIsMobileSearchOpen(true)}
-              className="active:text-primary transition-colors duration-300 md:hidden"
+              className="active:text-primary transition-colors duration-300 lg:hidden"
             >
               <Search className="size-6" />
             </button>

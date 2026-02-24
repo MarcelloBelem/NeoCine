@@ -68,7 +68,7 @@ export async function MediaHero({ mediaRef }: MediaHeroProps) {
       duration: isMovie.length,
       ...updateData,
     };
-    return updateStatusMediaAction(data);
+    await updateStatusMediaAction(data);
   };
 
   return (

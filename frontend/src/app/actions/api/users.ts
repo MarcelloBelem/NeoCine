@@ -15,7 +15,6 @@ export async function updateProfileAction(editData: editProfileData) {
 }
 
 export async function getUserMediaAction(route: getUserMediaRoute) {
-  console.log("Rote recebido na action:", route);
   const res = await getUserMedia(route);
 
   return res;
