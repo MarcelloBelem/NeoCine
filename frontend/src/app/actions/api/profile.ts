@@ -1,5 +1,6 @@
 "use server";
 import { editProfile, getProfile } from "@/service/api/profile";
+import { editProfileData } from "@/types/api/profile";
 
 export async function getProfileAction() {
   const res = await getProfile();
@@ -7,7 +8,7 @@ export async function getProfileAction() {
   return res;
 }
 
-export async function updateProfileAction(editData) {
+export async function updateProfileAction(editData: editProfileData) {
   const res = await editProfile(editData);
 
   return res;

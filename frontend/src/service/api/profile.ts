@@ -1,3 +1,4 @@
+import { editProfileData } from "@/types/api/profile";
 import { fetchAuth } from "./fetchAuth";
 
 export async function getProfile() {
@@ -16,7 +17,7 @@ export async function getProfile() {
   }
 }
 
-export async function editProfile(editData) {
+export async function editProfile(editData: editProfileData) {
   try {
     const res = await fetchAuth("users/me/edit", {
       method: "PATCH",
