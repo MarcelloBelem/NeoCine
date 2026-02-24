@@ -81,12 +81,18 @@ Crie um arquivo `.env` em `backend/` com:
 
 ```env
 DATABASE_URL="postgresql://USER:PASSWORD@HOST:PORT/DB_NAME"
+DIRECT_URL="postgresql://USER:PASSWORD@HOST:5432/DB_NAME"
 JWT_SECRET="sua_chave_jwt"
 JWT_REFRESH_SECRET="sua_chave_jwt_refresh"
 PORT=3000
 ```
 
 > `PORT` é opcional (fallback para `3000`).
+>
+> Em produção com Supabase + Prisma Migrate, prefira:
+>
+> - `DATABASE_URL`: URL usada pela aplicação em runtime
+> - `DIRECT_URL`: conexão direta (sem pooler), usada para migrations
 
 ---
 

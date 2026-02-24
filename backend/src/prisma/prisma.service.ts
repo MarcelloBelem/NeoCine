@@ -5,10 +5,10 @@ import { PrismaPg } from '@prisma/adapter-pg';
 @Injectable()
 export class PrismaService extends PrismaClient implements OnModuleInit {
   constructor() {
-    const connectionString = process.env.DATABASE_URL;
+    const connectionString = process.env.DATABASE_URL ?? process.env.DIRECT_URL;
 
     if (!connectionString) {
-      throw new Error('DATABASE_URL não definida');
+      throw new Error('DATABASE_URL ou DIRECT_URL não definida');
     }
 
     const adapter = new PrismaPg({ connectionString });
