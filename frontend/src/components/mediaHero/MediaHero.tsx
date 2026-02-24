@@ -7,8 +7,7 @@ import { getMediaDetails } from "@/service/tmdb/tmdb";
 import { HeroActions } from "./HeroActions";
 
 //Types
-import { MediaHeroProps, UpdateStatusPayload } from "./MediaHero.types";
-import { genres } from "./MediaHero.types";
+import { MediaHeroProps, genres } from "./MediaHero.types";
 import { TMDBMovieDetails, TMDBTVDetails } from "@/types/tmdb";
 import {
   getStatusMediaAction,
@@ -54,17 +53,22 @@ export async function MediaHero({ mediaRef }: MediaHeroProps) {
           lengthUnit: "Temporadas",
         };
 
-  const handleUpdateStatus = async (updateData: UpdateStatusPayload) => {
+  const createUpdateStatusAction = async (updateData: {
+    isWatched?: boolean;
+    inWatchlist?: boolean;
+  }) => {
     "use server";
-
     const data = {
       id: media.id,
       type: mediaType,
+      title: isMovie.title,
+      genres: media.genres,
+      vote_average: media.vote_average,
+      poster_path: media.poster_path,
       duration: isMovie.length,
       ...updateData,
     };
-
-    const res = await updateStatusMediaAction(data);
+    return updateStatusMediaAction(data);
   };
 
   return (
@@ -140,7 +144,7 @@ export async function MediaHero({ mediaRef }: MediaHeroProps) {
 
         <HeroActions
           isAuthenticated={isAuthenticated}
-          updateStatusAction={handleUpdateStatus}
+          updateStatusAction={createUpdateStatusAction}
           initialStatus={{
             isWatched: mediaStatus.isWatched,
             isWatchlist: mediaStatus.isWatchlist,

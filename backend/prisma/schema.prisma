@@ -14,6 +14,7 @@ enum MediaType {
   tv
 }
 
+
 model User {
   id String @id @default(cuid())
   name String 
@@ -30,6 +31,10 @@ model Media {
   id  Int @id @default(autoincrement())
   tmdbId Int @unique
   type MediaType
+  title String
+  genres Json
+  vote_average Float
+  poster_path String
   duration Int?
   users UserMedia[]
   createdAt DateTime @default(now())

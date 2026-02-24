@@ -3,6 +3,7 @@ import { MediaController } from './media.controller';
 import { MediaService } from './media.service';
 
 @Module({
+  exports: [MediaService],
   controllers: [MediaController],
   providers: [MediaService],
 })

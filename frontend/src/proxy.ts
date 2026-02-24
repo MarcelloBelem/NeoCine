@@ -14,6 +14,8 @@ const REDIRECT_WHEN_AUTHENTICATED_ROUTE = "/";
 export async function proxy(request: NextRequest) {
   const path = request.nextUrl.pathname;
   const authToken = request.cookies.get("auth_token");
+  const refreshToken = request.cookies.get("refresh_token");
+  const hasSession = Boolean(authToken || refreshToken);
 
   const isAuthRoute = authRoutes.some((route) => route.path === path);
 
@@ -23,14 +25,14 @@ export async function proxy(request: NextRequest) {
   );
 
   // 1. Usuário LOGADO tentando acessar página de Login ou Cadastro
-  if (authToken && isAuthRoute) {
+  if (hasSession && isAuthRoute) {
     return NextResponse.redirect(
       new URL(REDIRECT_WHEN_AUTHENTICATED_ROUTE, request.url),
     );
   }
 
   // 2. Usuário NÃO LOGADO tentando acessar uma rota Privada
-  if (!authToken && isPrivateRoute) {
+  if (!hasSession && isPrivateRoute) {
     return NextResponse.redirect(
       new URL(REDIRECT_WHEN_NOT_AUTHENTICATED_ROUTE, request.url),
     );

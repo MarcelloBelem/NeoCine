@@ -1,9 +1,10 @@
 import { Module } from '@nestjs/common';
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
+import { MediaModule } from 'src/media/media.module';
 
 @Module({
-  imports: [],
+  imports: [MediaModule],
   controllers: [UsersController],
   providers: [UsersService],
 })

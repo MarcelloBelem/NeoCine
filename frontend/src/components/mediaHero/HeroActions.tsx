@@ -22,7 +22,11 @@ export function HeroActions({
 
     const nextValue = !isWatched;
     setIsWatched(nextValue);
-    await updateStatusAction({ isWatched: nextValue });
+    try {
+      await updateStatusAction({ isWatched: nextValue });
+    } catch {
+      setIsWatched(!nextValue); // Revert on error
+    }
   };
 
   const handleToggleWatchlist = async () => {
@@ -33,7 +37,11 @@ export function HeroActions({
 
     const nextValue = !inWatchlist;
     setInWatchlist(nextValue);
-    await updateStatusAction({ inWatchlist: nextValue });
+    try {
+      await updateStatusAction({ inWatchlist: nextValue });
+    } catch {
+      setInWatchlist(!nextValue); // Revert on error
+    }
   };
 
   return (

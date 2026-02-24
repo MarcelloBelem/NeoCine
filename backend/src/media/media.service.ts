@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { UpdateMediaStatusDto } from './dtos/media.dtos';
+import { FindByUserParamsDto, UpdateMediaStatusDto } from './dtos/media.dtos';
 
 type MediaStatusResponse = {
   id: number | null;
@@ -51,8 +51,22 @@ export class MediaService {
   ) {
     const media = await this.prismaService.media.upsert({
       where: { tmdbId: data.id },
-      create: { tmdbId: data.id, type: data.type, duration: data.duration },
-      update: { duration: data.duration },
+      create: {
+        tmdbId: data.id,
+        type: data.type,
+        duration: data.duration,
+        title: data.title,
+        genres: data.genres || [],
+        vote_average: data.vote_average,
+        poster_path: data.poster_path ?? '',
+      },
+      update: {
+        title: data.title,
+        genres: data.genres || [],
+        vote_average: data.vote_average,
+        poster_path: data.poster_path ?? '',
+        duration: data.duration,
+      },
     });
 
     const currentRelation = await this.prismaService.userMedia.findUnique({
@@ -68,7 +82,7 @@ export class MediaService {
     const nextInWatchlist =
       data.inWatchlist ?? currentRelation?.inWatchlist ?? false;
 
-    return this.prismaService.userMedia.upsert({
+    return await this.prismaService.userMedia.upsert({
       where: {
         userId_mediaId: {
           userId: userId,
@@ -85,6 +99,17 @@ export class MediaService {
         isWatched: nextIsWatched,
         inWatchlist: nextInWatchlist,
       },
+    });
+  }
+
+  async findByUser({ userId, isWatched, inWatchlist }: FindByUserParamsDto) {
+    return this.prismaService.userMedia.findMany({
+      where: {
+        userId,
+        ...(isWatched !== undefined && { isWatched }),
+        ...(inWatchlist !== undefined && { inWatchlist }),
+      },
+      include: { media: true },
     });
   }
 }

@@ -45,3 +45,23 @@ export async function register(formData: RegisterData) {
     return { success: false, message: "Falha na conexão com o servidor" };
   }
 }
+
+export async function refreshAccessToken(refreshToken: string) {
+  try {
+    const res = await fetch(`${API_URL}auth/refresh`, {
+      method: "POST",
+      headers,
+      body: JSON.stringify({ refreshToken }),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      return { success: false, message: data.message || "Erro desconhecido" };
+    }
+
+    return { success: true, data };
+  } catch {
+    return { success: false, message: "Falha na conexão com o servidor" };
+  }
+}

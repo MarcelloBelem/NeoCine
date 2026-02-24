@@ -1,98 +1,196 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
+# NeoCine API (Backend)
+
+Backend do NeoCine construído com **NestJS + Prisma + PostgreSQL**, responsável por autenticação, perfil de usuário e gerenciamento do status de mídias (assistido / minha lista).
+
+## 🛠️ Tecnologias
+
+<p align="left">
+  <img src="https://skillicons.dev/icons?i=nestjs,ts,nodejs,prisma,postgres,docker" alt="Tecnologias do backend" />
 </p>
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+![NestJS](https://img.shields.io/badge/Framework-NestJS-E0234E?style=for-the-badge&logo=nestjs)
+![JWT](https://img.shields.io/badge/Auth-JWT-black?style=for-the-badge&logo=jsonwebtokens)
+![Class Validator](https://img.shields.io/badge/Validation-class--validator-3C873A?style=for-the-badge)
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+---
 
-## Description
+## 📌 Visão Geral
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+A API foi organizada por domínio funcional e segue uma estrutura modular:
 
-## Project setup
+- **auth**: cadastro, login e emissão/validação de JWT
+- **users**: perfil do usuário autenticado
+- **media**: status da mídia por usuário (assistido e watchlist)
+- **prisma**: conexão com banco e acesso aos dados
+- **ping**: rota pública para health check (`GET /ping`)
 
-```bash
-$ npm install
+---
+
+## 🧱 Stack Técnica
+
+- **Framework**: NestJS 11
+- **Linguagem**: TypeScript
+- **Banco de dados**: PostgreSQL
+- **ORM**: Prisma 7 (adapter `@prisma/adapter-pg`)
+- **Auth**: JWT + `AuthGuard`
+- **Validação de DTOs**: `class-validator` + `class-transformer`
+
+---
+
+## 🗂️ Estrutura de Pastas
+
+```text
+backend/
+├─ src/
+│  ├─ app.module.ts
+│  ├─ main.ts
+│  ├─ ping.controller.ts
+│  ├─ auth/
+│  │  ├─ auth.controller.ts
+│  │  ├─ auth.service.ts
+│  │  ├─ auth.guard.ts
+│  │  ├─ auth.module.ts
+│  │  └─ dtos/
+│  ├─ users/
+│  │  ├─ users.controller.ts
+│  │  ├─ users.service.ts
+│  │  ├─ users.module.ts
+│  │  └─ dtos/
+│  ├─ media/
+│  │  ├─ media.controller.ts
+│  │  ├─ media.service.ts
+│  │  ├─ media.module.ts
+│  │  └─ dtos/
+│  ├─ prisma/
+│  │  ├─ prisma.module.ts
+│  │  └─ prisma.service.ts
+│  └─ types/
+├─ prisma/
+│  ├─ schema.prisma
+│  └─ migrations/
+├─ generated/
+│  └─ prisma/
+└─ package.json
 ```
 
-## Compile and run the project
+---
 
-```bash
-# development
-$ npm run start
+## 🔐 Variáveis de Ambiente
 
-# watch mode
-$ npm run start:dev
+Crie um arquivo `.env` em `backend/` com:
 
-# production mode
-$ npm run start:prod
+```env
+DATABASE_URL="postgresql://USER:PASSWORD@HOST:PORT/DB_NAME"
+JWT_SECRET="sua_chave_jwt"
+JWT_REFRESH_SECRET="sua_chave_jwt_refresh"
+PORT=3000
 ```
 
-## Run tests
+> `PORT` é opcional (fallback para `3000`).
+
+---
+
+## ▶️ Como Rodar Localmente
+
+### 1) Instalar dependências
 
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+npm install
 ```
 
-## Deployment
-
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+### 2) Aplicar migrations do Prisma
 
 ```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+npx prisma migrate dev
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+### 3) Rodar em desenvolvimento
 
-## Resources
+```bash
+npm run start:dev
+```
 
-Check out a few resources that may come in handy when working with NestJS:
+### 4) Build e produção
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+```bash
+npm run build
+npm run start:prod
+```
 
-## Support
+---
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+## 🧭 Endpoints Principais
 
-## Stay in touch
+### Health Check
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+- `GET /ping` → retorna `{ "message": "pong" }`
 
-## License
+### Auth
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+- `POST /auth/register`
+- `POST /auth/login`
+
+### Usuário (autenticado)
+
+- `GET /users/me`
+- `PATCH /users/me/edit`
+- `GET /users/me/media?isWatched=true|false&inWatchlist=true|false`
+
+### Mídia (autenticado)
+
+- `PATCH /media/:tmdbId`
+- `GET /media/:tmdbId/status`
+
+> Rotas autenticadas exigem header:
+>
+> `Authorization: Bearer <token>`
+
+---
+
+## 🧩 Modelo de Dados (Resumo)
+
+O schema Prisma define 3 entidades centrais:
+
+- **User**
+  - Dados do usuário e relacionamento com mídias
+- **Media**
+  - Dados da mídia vinda do TMDB (`tmdbId`, `type`, `title`, `duration`, etc.)
+- **UserMedia**
+  - Tabela de relação User x Media com status:
+    - `isWatched`
+    - `inWatchlist`
+
+Relacionamento chave:
+
+- `User 1:N UserMedia`
+- `Media 1:N UserMedia`
+- Chave única composta em `UserMedia`: `@@unique([userId, mediaId])`
+
+---
+
+## 🔄 Fluxo Resumido
+
+1. Usuário faz login/cadastro em `auth`
+2. API retorna `accessToken` JWT
+3. Front envia token no header `Authorization`
+4. `AuthGuard` valida token e injeta `req.user`
+5. Módulos `users` e `media` executam regras de negócio
+6. Persistência feita via `PrismaService`
+
+---
+
+## 🧯 Keep Alive / Cronjob
+
+Para manter a API acordada em plataformas com cold start, use um cronjob chamando:
+
+```bash
+GET /ping
+```
+
+Exemplo com `curl`:
+
+```bash
+curl -s https://sua-api.com/ping
+```
+
+---

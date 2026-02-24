@@ -49,7 +49,6 @@ export default function Login() {
       return;
     }
 
-    console.log("Sucesso! Dados do usuário:", res.data);
     showToast({ conteudo: res.data.message, tipo: "confirmado" });
     router.refresh();
 

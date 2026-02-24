@@ -15,8 +15,9 @@ import {
 } from "lucide-react";
 import {
   getProfileAction,
+  getUserMediaAction,
   updateProfileAction,
-} from "@/app/actions/api/profile";
+} from "@/app/actions/api/users";
 import { logoutAction } from "@/app/actions/api/auth";
 
 //Componentes
@@ -36,6 +37,18 @@ type EditProfileData = {
   bio: string;
 };
 
+type UserMediaItem = {
+  media?: {
+    type?: "movie" | "tv" | string;
+    duration?: number | null;
+  } | null;
+};
+
+function formatWatchedTime(totalMinutes: number) {
+  const totalHours = totalMinutes / 60;
+  return `${Number(totalHours.toFixed(1))}h`;
+}
+
 export default function ProfilePage() {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
@@ -49,8 +62,9 @@ export default function ProfilePage() {
     avatar: "",
     bio: "",
     joinDate: "",
-    watched: 127,
-    watchlist: 42,
+    watched: 0,
+    watchlist: 0,
+    watchedTimeMinutes: 0,
   });
 
   const [editFormData, setEditFormData] = useState<EditProfileData>({
@@ -78,17 +92,50 @@ export default function ProfilePage() {
 
     async function fetchProfile() {
       try {
-        const response = await getProfileAction();
+        const [profileRes, watchedRes, watchlistRes] = await Promise.all([
+          getProfileAction(),
+          getUserMediaAction({ isWatched: true }),
+          getUserMediaAction({ inWatchlist: true }),
+        ]);
 
-        if (!response.success || !response.data) {
-          return;
+        if (!isMounted) return;
+
+        if (profileRes.success && profileRes.data) {
+          applyProfileData(profileRes.data);
         }
 
-        const data = response.data;
+        const watchedData =
+          watchedRes.success && Array.isArray(watchedRes.data)
+            ? (watchedRes.data as UserMediaItem[])
+            : [];
 
-        if (data && isMounted) {
-          applyProfileData(data);
-        }
+        const watchlistData =
+          watchlistRes.success && Array.isArray(watchlistRes.data)
+            ? (watchlistRes.data as UserMediaItem[])
+            : [];
+
+        const watchedTimeMinutes = watchedData.reduce((sum, item) => {
+          const media = item.media;
+
+          if (!media || media.type !== "movie") {
+            return sum;
+          }
+
+          const duration =
+            typeof media.duration === "number" &&
+            Number.isFinite(media.duration)
+              ? media.duration
+              : 0;
+
+          return sum + duration;
+        }, 0);
+
+        setUser((prev) => ({
+          ...prev,
+          watched: watchedData.length,
+          watchlist: watchlistData.length,
+          watchedTimeMinutes,
+        }));
       } catch (error) {
         console.error("Erro", error);
       } finally {
@@ -298,10 +345,10 @@ export default function ProfilePage() {
 
           <div className="relative z-10 flex items-center justify-between">
             <div>
-              <p className="text-sm text-white/60">Tempo Assistido</p>
+              <p className="text-sm text-white/60">Tempo Assistido - Filmes</p>
               <p className="font-orbitron text-3xl font-bold tracking-wider">
                 <ProfileSkeletonField loading={loading}>
-                  {(user.watched * 2.5).toFixed(0)}h
+                  {formatWatchedTime(user.watchedTimeMinutes)}
                 </ProfileSkeletonField>
               </p>
             </div>

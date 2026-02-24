@@ -24,6 +24,12 @@ export function MediaGrid({ title, media, fetchMoreAction }: MediaGridProps) {
   });
 
   useEffect(() => {
+    setMediaList(media ?? []);
+    setPage(1);
+    setHasMore(true);
+  }, [media]);
+
+  useEffect(() => {
     // Se o elemento final está visível e temos mais páginas para carregar
     if (inView && hasMore && !isLoading) {
       loadMore();
@@ -35,8 +41,6 @@ export function MediaGrid({ title, media, fetchMoreAction }: MediaGridProps) {
 
     setIsLoading(true);
     const nextPage = page + 1;
-
-    console.log("Carregando mais mídia, página:", nextPage);
 
     try {
       const newMedia = (await fetchMoreAction(nextPage)) as TMDBContent[];

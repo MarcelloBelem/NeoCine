@@ -11,7 +11,7 @@ import {
   EyeOff,
   Calendar,
 } from "lucide-react";
-import { success, z } from "zod";
+import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FormInput } from "@/components/FormInput";
@@ -88,7 +88,6 @@ export default function Register() {
       return;
     }
 
-    console.log("Sucesso! Dados do usuário:", res.data);
     showToast({ conteudo: res.data.message, tipo: "confirmado" });
 
     router.refresh();
