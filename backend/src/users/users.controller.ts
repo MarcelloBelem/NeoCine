@@ -7,14 +7,10 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from 'src/auth/auth.guard';
+import { UpdateUserDto } from './dtos/update-user.dto';
 import { UsersService } from './users.service';
 import { Request as ExpressRequest } from 'express';
-import { UpdateUserDto } from './dtos/update-user.dto';
-
-interface JwtPayload {
-  sub: string;
-  email?: string;
-}
+import { JwtPayload } from 'src/types/jwt';
 
 @Controller('users')
 export class UsersController {

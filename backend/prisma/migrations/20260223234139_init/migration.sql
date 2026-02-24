@@ -1,8 +1,5 @@
 -- CreateEnum
-CREATE TYPE "WatchStatus" AS ENUM ('WATCHED', 'PLAN_TO_WATCH');
-
--- CreateEnum
-CREATE TYPE "MediaType" AS ENUM ('MOVIE', 'TV');
+CREATE TYPE "MediaType" AS ENUM ('movie', 'tv');
 
 -- CreateTable
 CREATE TABLE "User" (
@@ -35,7 +32,8 @@ CREATE TABLE "UserMedia" (
     "id" SERIAL NOT NULL,
     "userId" TEXT NOT NULL,
     "mediaId" INTEGER NOT NULL,
-    "status" "WatchStatus" NOT NULL,
+    "isWatched" BOOLEAN NOT NULL DEFAULT false,
+    "inWatchlist" BOOLEAN NOT NULL DEFAULT false,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -49,7 +47,7 @@ CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 CREATE UNIQUE INDEX "Media_tmdbId_key" ON "Media"("tmdbId");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "UserMedia_userId_mediaId_status_key" ON "UserMedia"("userId", "mediaId", "status");
+CREATE UNIQUE INDEX "UserMedia_userId_mediaId_key" ON "UserMedia"("userId", "mediaId");
 
 -- AddForeignKey
 ALTER TABLE "UserMedia" ADD CONSTRAINT "UserMedia_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

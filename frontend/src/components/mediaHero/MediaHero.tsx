@@ -7,9 +7,13 @@ import { getMediaDetails } from "@/service/tmdb/tmdb";
 import { HeroActions } from "./HeroActions";
 
 //Types
-import { MediaHeroProps } from "./MediaHero.types";
+import { MediaHeroProps, UpdateStatusPayload } from "./MediaHero.types";
 import { genres } from "./MediaHero.types";
 import { TMDBMovieDetails, TMDBTVDetails } from "@/types/tmdb";
+import {
+  getStatusMediaAction,
+  updateStatusMediaAction,
+} from "@/app/actions/api/media";
 
 export async function MediaHero({ mediaRef }: MediaHeroProps) {
   const res = await getMediaDetails(mediaRef.id, mediaRef.media_type);
@@ -21,6 +25,12 @@ export async function MediaHero({ mediaRef }: MediaHeroProps) {
   const media = res.data;
 
   const mediaType = res.mediaType;
+
+  const mediaStatusRes = await getStatusMediaAction(mediaRef.id);
+  const mediaStatus =
+    mediaStatusRes.success && "data" in mediaStatusRes
+      ? mediaStatusRes.data
+      : { id: null, isWatched: false, isWatchlist: false };
 
   const imageBackdropUrl = getImageUrl(media.backdrop_path, "original");
   const imagePosterUrl = getImageUrl(media.poster_path, "original");
@@ -39,6 +49,21 @@ export async function MediaHero({ mediaRef }: MediaHeroProps) {
           length: (media as TMDBTVDetails).number_of_seasons,
           lengthUnit: "Temporadas",
         };
+
+  const handleUpdateStatus = async (updateData: UpdateStatusPayload) => {
+    "use server";
+
+    const data = {
+      id: media.id,
+      type: mediaType,
+      duration: isMovie.length,
+      ...updateData,
+    };
+
+    const res = await updateStatusMediaAction(data);
+
+    console.log("Update Status Response:", res);
+  };
 
   return (
     <div className="pt-16">
@@ -111,7 +136,13 @@ export async function MediaHero({ mediaRef }: MediaHeroProps) {
           {media.overview}
         </p>
 
-        <HeroActions />
+        <HeroActions
+          updateStatusAction={handleUpdateStatus}
+          initialStatus={{
+            isWatched: mediaStatus.isWatched,
+            isWatchlist: mediaStatus.isWatchlist,
+          }}
+        />
       </div>
     </div>
   );
